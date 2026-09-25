@@ -1,7 +1,15 @@
+import Navbar from "@/components/home/Navbar";
+import HeroSection from "@/components/home/HeroSection";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
+import ExamplesSection from "@/components/home/ExamplesSection";
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-900">
-      <h1 className="text-6xl font-bold text-white">Day Zero</h1>
-    </div>
+    <main>
+      <Navbar />
+      <HeroSection />
+      <HowItWorksSection />
+      <ExamplesSection />
+    </main>
   );
 }
