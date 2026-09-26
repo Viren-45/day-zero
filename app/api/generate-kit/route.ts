@@ -42,6 +42,7 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json(
       {
         ...kit,
+        fileTree, // ← flat array of file paths for the file tree UI
         repoPath,
         role,
         level,

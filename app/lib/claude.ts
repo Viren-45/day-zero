@@ -20,7 +20,7 @@ export async function generateKit(
       headers: baseHeaders,
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 4000,
+        max_tokens: 10000,
         messages: [{ role: "user", content: prompt }],
       }),
     });

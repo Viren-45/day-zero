@@ -49,7 +49,10 @@ export async function POST(request: Request): Promise<Response> {
       // rawResponse is plain text — fall through
     }
 
-    console.log("[ask-anything] rawResponse preview:", rawResponse.slice(0, 120));
+    console.log(
+      "[ask-anything] rawResponse preview:",
+      rawResponse.slice(0, 120),
+    );
     console.log("[ask-anything] parsed:", parsed);
     console.log("[ask-anything] needsMoreContext:", parsed?.needsMoreContext);
 

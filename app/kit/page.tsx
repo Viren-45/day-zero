@@ -11,12 +11,15 @@ import FirstHourTab from "@/components/kit/tabs/FirstHourTab";
 import WatchOutTab from "@/components/kit/tabs/WatchOutTab";
 import FirstTaskTab from "@/components/kit/tabs/FirstTaskTab";
 import AskAnythingTab from "@/components/kit/tabs/AskAnythingTab";
+import { Architecture } from "@/components/kit/tabs/map/types/diagram";
 
 interface Kit {
   repo: string;
+  repoPath: string;
   role: string;
   level: string;
-  map: { mermaid: string; explanation: string };
+  fileTree: string[];
+  map: Architecture;
   firstHour: { step: number; title: string; description: string }[];
   watchOut: {
     severity: "High" | "Medium" | "Low";
@@ -31,7 +34,6 @@ interface Kit {
     relatedFiles: string[];
   };
   chatContext: string;
-  repoPath: string;
 }
 
 export default function KitPage() {
@@ -57,10 +59,10 @@ export default function KitPage() {
           return;
         }
       } catch {
-        // sessionStorage unavailable or parse failed — fall through to API
+        /* fall through */
       }
 
-      // Fallback — re-fetch from API using URL params
+      // Fallback — re-fetch from API
       if (!repo) {
         router.push("/");
         return;
@@ -123,9 +125,16 @@ export default function KitPage() {
             activeTab={activeTab}
           />
 
-          <div className="flex-1 overflow-y-auto p-8">
+          <div
+            className={`flex-1 overflow-hidden relative ${activeTab === "map" ? "" : "overflow-y-auto p-8"}`}
+          >
             {activeTab === "map" && (
-              <YourMapTab map={kit.map} chatContext={kit.chatContext} />
+              <YourMapTab
+                map={kit.map}
+                fileTree={kit.fileTree ?? []}
+                repoPath={kit.repoPath ?? kit.repo}
+                chatContext={kit.chatContext}
+              />
             )}
             {activeTab === "firstHour" && (
               <FirstHourTab firstHour={kit.firstHour} />
