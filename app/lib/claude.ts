@@ -33,14 +33,26 @@ export async function generateKit(
     const data = await res.json();
     const rawText: string = data.content?.[0]?.text ?? "";
 
+    // More aggressive cleaning
     const cleaned = rawText
       .replace(/```json\s*/gi, "")
       .replace(/```\s*/g, "")
+      .replace(/^[^{]*/, "") // remove anything before first {
+      .replace(/[^}]*$/, "") // remove anything after last }
       .trim();
 
     try {
       return JSON.parse(cleaned) as Record<string, unknown>;
     } catch {
+      // Try to find JSON object within the response
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          return JSON.parse(jsonMatch[0]) as Record<string, unknown>;
+        } catch {
+          throw new Error("Failed to parse kit response from Claude");
+        }
+      }
       throw new Error("Failed to parse kit response from Claude");
     }
   } catch (err) {
@@ -63,8 +75,8 @@ export async function generateKit(
 
 export async function askWithContext(
   prompt: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _chatContext: string,
+  history: { role: "user" | "assistant"; content: string }[] = [],
 ): Promise<string> {
   try {
     const res = await fetch(CLAUDE_API_URL, {
@@ -74,7 +86,7 @@ export async function askWithContext(
         model: MODEL,
         max_tokens: 1000,
         system: "You are a helpful codebase assistant.",
-        messages: [{ role: "user", content: prompt }],
+        messages: [...history, { role: "user", content: prompt }],
       }),
     });
 
@@ -99,10 +111,9 @@ export async function askWithContext(
 
 export async function askWithExtraContext(
   prompt: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _chatContext: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _extraContext: string,
+  history: { role: "user" | "assistant"; content: string }[] = [],
 ): Promise<string> {
   try {
     const res = await fetch(CLAUDE_API_URL, {
@@ -113,7 +124,7 @@ export async function askWithExtraContext(
         max_tokens: 1500,
         system:
           "You are a helpful codebase assistant who has been given additional file content from the codebase to answer accurately.",
-        messages: [{ role: "user", content: prompt }],
+        messages: [...history, { role: "user", content: prompt }],
       }),
     });
 

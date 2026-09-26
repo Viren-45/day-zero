@@ -12,7 +12,7 @@ export function buildKitPrompt(
   repoPath: string,
   role: string,
   level: string,
-  repoData: RepoData
+  repoData: RepoData,
 ): string {
   return `You are an expert developer onboarding assistant. A ${level} ${role} developer is joining a new team and needs a complete onboarding kit for the GitHub repository: ${repoPath}.
 
@@ -32,7 +32,7 @@ Return your response as a single valid JSON object. Do not include any markdown 
 The JSON must have exactly these five keys:
 
 1. "map": An object with:
-   - "mermaid": A valid Mermaid diagram string representing the high-level architecture of the codebase, tailored to what a ${role} developer would care about most.
+   - "mermaid": A valid Mermaid diagram using ONLY this exact format: node definitions like A[Short Label] and edges like A --> B[Short Label]. Maximum 8 nodes. Do NOT use subgraph blocks. Do NOT use HTML tags like br. Do NOT use quoted labels with double quotes inside brackets. Every node label must be short plain text inside simple square brackets only.
    - "explanation": A 2–3 sentence plain English explanation of the codebase structure and purpose.
 
 2. "firstHour": An array of 4–6 objects, each with:
@@ -57,9 +57,9 @@ The JSON must have exactly these five keys:
 
 export function buildChatPrompt(
   chatContext: string,
-  userQuestion: string
+  userQuestion: string,
 ): string {
-  return `You are a helpful codebase assistant for a developer who just joined a new team. You have been given a context summary of the codebase below.
+  return `You are a helpful codebase assistant for a developer who just joined the team. You have been given a context summary of the codebase below.
 
 --- CODEBASE CONTEXT ---
 ${chatContext}
@@ -67,22 +67,22 @@ ${chatContext}
 --- DEVELOPER QUESTION ---
 ${userQuestion}
 
-Answer the question accurately and concisely based on the context above.
+Rules you must follow without exception:
 
-- If you are confident in your answer, respond with a plain conversational answer.
-- If you do not have enough information in the context to answer accurately, you must respond with a raw JSON object (no markdown, no code blocks) containing exactly two keys:
-  {
-    "needsMoreContext": true,
-    "searchFor": "<3–5 words describing what to search for in the codebase>"
-  }
+1. If the answer is clearly available in the codebase context above, answer directly and confidently in plain conversational text.
 
-Never guess or hallucinate file paths. Always prefer saying you need more context over giving a wrong answer.`;
+2. If the answer is NOT fully covered in the context above, or if you are even slightly unsure, you MUST respond with ONLY this exact JSON and absolutely nothing else — no explanation, no apology, no other text:
+{ "needsMoreContext": true, "searchFor": "<3 to 5 words describing what to search for in the codebase>" }
+
+3. NEVER say you don't have access to the codebase. NEVER say you only have a summary. NEVER apologize for not knowing. NEVER try to answer from general knowledge when the answer should come from the codebase. If you are not sure, always trigger the JSON fallback — the system will search the real codebase files and get the answer.
+
+4. The JSON fallback is always better than a wrong or vague answer. Use it liberally.`;
 }
 
 export function buildChatWithExtraContextPrompt(
   chatContext: string,
   userQuestion: string,
-  extraFiles: string
+  extraFiles: string,
 ): string {
   return `You are a helpful codebase assistant for a developer who just joined a new team. You have been given a context summary of the codebase as well as additional file content retrieved directly from the repository.
 
