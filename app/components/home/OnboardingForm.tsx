@@ -143,16 +143,16 @@ export default function OnboardingForm() {
       </button>
 
       {/* Example chips */}
-      <div className="flex items-center gap-3 flex-wrap justify-center pt-1">
-        <span className="text-xs text-gray-500">Try an example:</span>
+      <div className="flex items-center gap-3 flex-wrap justify-center pt-2">
+        <span className="text-sm font-medium text-gray-600">Try an example:</span>
         {EXAMPLES.map((ex) => (
           <button
             key={ex.url}
             onClick={() => handleExample(ex.url)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-white text-xs text-gray-700 hover:border-indigo-300 hover:text-indigo-600 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-200 bg-indigo-100 text-sm font-medium text-indigo-700 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white active:scale-95 transition-all shadow-sm cursor-pointer"
           >
             <svg
-              className="w-3.5 h-3.5 text-gray-500"
+              className="w-4 h-4"
               viewBox="0 0 24 24"
               fill="currentColor"
             >

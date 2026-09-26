@@ -3,18 +3,21 @@
 const steps = [
   {
     step: "01",
+    gradient: "from-indigo-500 to-violet-500",
     title: "Paste a GitHub URL",
     description:
       "Drop in any public repository URL. Day Zero fetches the structure, key files, and architecture so you don't have to read through everything yourself.",
   },
   {
     step: "02",
+    gradient: "from-fuchsia-500 to-pink-500",
     title: "Pick your role and level",
     description:
       "Tell us whether you're Frontend, Backend, Full Stack, or DevOps and whether you're Junior, Mid, or Senior. Your kit is built around you, not a generic developer.",
   },
   {
     step: "03",
+    gradient: "from-emerald-500 to-cyan-500",
     title: "Get your personalized kit",
     description:
       "Receive an architecture overview, a first-hour setup guide, hidden gotchas, a suggested first task, and a live chat - all grounded in the actual codebase.",
@@ -42,7 +45,7 @@ export default function HowItWorksSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {steps.map((s) => (
             <div key={s.step} className="flex flex-col gap-4">
-              <span className="text-5xl font-black text-indigo-100 leading-none select-none">
+              <span className={`text-6xl font-black leading-none select-none text-transparent bg-clip-text bg-linear-to-br ${s.gradient}`}>
                 {s.step}
               </span>
               <h3 className="text-lg font-bold text-gray-900">{s.title}</h3>
