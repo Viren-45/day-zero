@@ -1,4 +1,5 @@
 // app/components/home/ExamplesSection.tsx
+import Link from "next/link";
 
 const examples = [
   {
@@ -48,9 +49,13 @@ export default function ExamplesSection() {
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {examples.map((ex) => (
-            <a
+            <Link
               key={ex.repo}
-              href={`/kit?repo=${encodeURIComponent(ex.url)}&role=Full Stack&level=Mid Level`}
+              href={`/loading-kit?${new URLSearchParams({
+                repo: ex.repo,
+                role: "Full Stack",
+                level: "Mid Level",
+              }).toString()}`}
               className="group flex flex-col gap-3 bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all"
             >
               {/* Repo name */}
@@ -97,7 +102,7 @@ export default function ExamplesSection() {
               <div className="mt-2 w-full py-2 rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600 text-xs font-semibold text-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                 Generate Kit →
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
