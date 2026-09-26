@@ -4,29 +4,56 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import LoadingSteps from "@/components/loading/LoadingSteps";
 import LoadingProgress from "@/components/loading/LoadingProgress";
+import LoadingHeader from "@/components/loading/LoadingHeader";
 
 type StepStatus = "pending" | "active" | "complete";
 
 interface Step {
   label: string;
+  description: string;
   status: StepStatus;
 }
 
 const INITIAL_STEPS: Step[] = [
-  { label: "Fetching repository structure", status: "pending" },
-  { label: "Reading file structure and key files", status: "pending" },
-  { label: "Generating your architecture map", status: "pending" },
-  { label: "Building your setup guide", status: "pending" },
-  { label: "Finding gotchas and conventions", status: "pending" },
-  { label: "Suggesting your first task", status: "pending" },
-  { label: "Preparing your chat context", status: "pending" },
+  {
+    label: "Fetching repository structure",
+    description: "Reading files and directories",
+    status: "pending",
+  },
+  {
+    label: "Reading file structure and key files",
+    description:
+      "Analyzing important files (package.json, configs, routes, etc.)",
+    status: "pending",
+  },
+  {
+    label: "Generating your architecture map",
+    description: "Detecting frameworks, services and dependencies",
+    status: "pending",
+  },
+  {
+    label: "Building your setup guide",
+    description: "Identifying environment, installation and run steps",
+    status: "pending",
+  },
+  {
+    label: "Finding gotchas and conventions",
+    description: "Scanning for common issues and project-specific rules",
+    status: "pending",
+  },
+  {
+    label: "Suggesting your first task",
+    description: "Finding a safe and meaningful first contribution",
+    status: "pending",
+  },
+  {
+    label: "Preparing your chat context",
+    description: "Indexing key files for Ask Anything",
+    status: "pending",
+  },
 ];
 
-function setStep(
-  steps: Step[],
-  index: number,
-  status: StepStatus,
-): Step[] {
+function setStep(steps: Step[], index: number, status: StepStatus): Step[] {
   return steps.map((s, i) => (i === index ? { ...s, status } : s));
 }
 
@@ -36,9 +63,7 @@ function setStepsRange(
   to: number,
   status: StepStatus,
 ): Step[] {
-  return steps.map((s, i) =>
-    i >= from && i <= to ? { ...s, status } : s,
-  );
+  return steps.map((s, i) => (i >= from && i <= to ? { ...s, status } : s));
 }
 
 export default function LoadingKitPage() {
@@ -109,8 +134,12 @@ export default function LoadingKitPage() {
         clearInterval(stepCycler);
 
         if (!res.ok) {
-          const body = await res.json().catch(() => ({ message: res.statusText }));
-          setError((body as { message?: string }).message ?? "Something went wrong.");
+          const body = await res
+            .json()
+            .catch(() => ({ message: res.statusText }));
+          setError(
+            (body as { message?: string }).message ?? "Something went wrong.",
+          );
           return;
         }
 
@@ -151,32 +180,24 @@ export default function LoadingKitPage() {
     );
   }
 
+  const completed = steps.filter((s) => s.status === "complete").length;
+
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-6"
-      style={{ backgroundColor: "#0F0F1A" }}
-    >
-      <div className="w-full max-w-md flex flex-col gap-8">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-            &gt;_
-          </div>
-          <span className="text-white font-bold text-lg tracking-tight">
-            Day Zero
-          </span>
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col items-center px-6 py-6 bg-[#0A0B1E] bg-no-repeat lg:bg-[url('/loading-bg-main.png')] lg:bg-cover lg:bg-left">
+      <LoadingHeader repo={repo} />
+
+      {/* Below lg: plain background, centred. From lg: the steps start to the
+          right of the illustration, which occupies ~48% of the rendered image
+          (the image is drawn at max(100vw, 16:9 of 100vh) wide). */}
+      <div className="w-full flex-1 min-h-0 flex items-center mt-6 lg:mt-4">
+        <div className="w-full min-w-0 max-w-xl mx-auto lg:mx-0 lg:ml-[calc(max(100vw,177.78vh)*0.48)] flex flex-col gap-5">
+          <LoadingSteps steps={steps} />
+          <LoadingProgress
+            progress={progress}
+            completed={completed}
+            total={steps.length}
+          />
         </div>
-
-        {/* Repo name */}
-        {repo && (
-          <p className="text-indigo-400 text-xs font-mono -mt-4">{repo}</p>
-        )}
-
-        {/* Steps */}
-        <LoadingSteps steps={steps} />
-
-        {/* Progress bar */}
-        <LoadingProgress progress={progress} />
       </div>
     </div>
   );

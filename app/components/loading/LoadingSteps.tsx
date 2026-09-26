@@ -2,6 +2,7 @@ type StepStatus = "pending" | "active" | "complete";
 
 interface Step {
   label: string;
+  description: string;
   status: StepStatus;
 }
 
@@ -11,14 +12,14 @@ interface LoadingStepsProps {
 
 export default function LoadingSteps({ steps }: LoadingStepsProps) {
   return (
-    <ul className="flex flex-col gap-3">
+    <ul className="flex flex-col gap-3.5">
       {steps.map((step, i) => (
-        <li key={i} className="flex items-center gap-3">
+        <li key={i} className="flex items-center gap-4">
           {/* Icon */}
-          <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+          <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
             {step.status === "complete" && (
               <svg
-                className="w-5 h-5 text-green-400"
+                className="w-6 h-6 text-emerald-400"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -31,7 +32,7 @@ export default function LoadingSteps({ steps }: LoadingStepsProps) {
             )}
             {step.status === "active" && (
               <svg
-                className="w-5 h-5 text-indigo-400 animate-spin"
+                className="w-6 h-6 text-indigo-400 animate-spin"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -41,38 +42,44 @@ export default function LoadingSteps({ steps }: LoadingStepsProps) {
                   cy="12"
                   r="10"
                   stroke="currentColor"
-                  strokeWidth="4"
+                  strokeWidth="3"
                 />
                 <path
-                  className="opacity-75"
+                  className="opacity-90"
                   fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
                 />
               </svg>
             )}
             {step.status === "pending" && (
-              <svg
-                className="w-5 h-5 text-gray-600"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" />
+              <svg className="w-6 h-6 text-white/20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="8.5" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             )}
           </div>
 
-          {/* Label */}
-          <span
-            className={`text-sm transition-colors ${
-              step.status === "active"
-                ? "text-white font-medium"
-                : step.status === "complete"
-                ? "text-gray-400"
-                : "text-gray-600"
-            }`}
-          >
-            {step.label}
-          </span>
+          {/* Label + description */}
+          <div className="min-w-0 flex-1">
+            <p
+              className={`text-[13px] leading-tight transition-colors ${
+                step.status === "pending" ? "text-white/50" : "text-white"
+              } ${step.status === "active" ? "font-medium" : ""}`}
+            >
+              {step.label}
+            </p>
+            <p
+              className={`text-[11px] mt-0.5 transition-colors ${
+                step.status === "pending" ? "text-white/25" : "text-white/45"
+              }`}
+            >
+              {step.description}
+            </p>
+          </div>
+
+          {/* Pending / active indicator */}
+          {step.status !== "complete" && (
+            <span className="text-white/40 text-sm tracking-widest">···</span>
+          )}
         </li>
       ))}
     </ul>
