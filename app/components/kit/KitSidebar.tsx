@@ -1,7 +1,14 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Check } from "lucide-react";
+import { examples } from "@/lib/sampleRepos";
+
 interface KitSidebarProps {
   repo: string;
+  role: string;
+  level: string;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
@@ -14,12 +21,83 @@ const tabs = [
   { key: "askAnything", emoji: "💬", label: "Ask Anything" },
 ];
 
-export default function KitSidebar({ repo, activeTab, setActiveTab }: KitSidebarProps) {
+export default function KitSidebar({
+  repo,
+  role,
+  level,
+  activeTab,
+  setActiveTab,
+}: KitSidebarProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const isSample = examples.some((ex) => ex.repo === repo);
+
+  // Close dropdown on outside click / Escape
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent) {
+      if (!menuRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  function selectRepo(target: string) {
+    setOpen(false);
+    if (target === repo) return; // already open — don't regenerate
+
+    // Drop the cached kit so the loading flow builds a fresh one
+    try {
+      sessionStorage.removeItem("kit");
+    } catch {
+      /* ignore */
+    }
+    const params = new URLSearchParams({
+      repo: target,
+      role: role || "Full Stack",
+      level: level || "Mid Level",
+    });
+    router.push(`/loading-kit?${params.toString()}`);
+  }
+
+  function renderRepoOption(name: string) {
+    const selected = name === repo;
+    return (
+      <button
+        type="button"
+        onClick={() => selectRepo(name)}
+        className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+          selected
+            ? "cursor-default bg-indigo-50 font-medium text-indigo-700"
+            : "text-gray-700 hover:bg-gray-100"
+        }`}
+      >
+        <span className="flex-1 truncate">{name}</span>
+        {selected && <Check className="h-4 w-4 shrink-0 text-indigo-600" />}
+      </button>
+    );
+  }
+
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-gray-200 bg-[#F9F9F9]">
       {/* Repo pill */}
-      <div className="border-b border-gray-200 px-3 py-3">
-        <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
+      <div ref={menuRef} className="relative border-b border-gray-200 px-3 py-3">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          className="flex w-full cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left shadow-sm transition-colors hover:border-indigo-200"
+        >
           {/* GitHub icon */}
           <svg
             className="h-4 w-4 shrink-0 text-gray-600"
@@ -34,7 +112,7 @@ export default function KitSidebar({ repo, activeTab, setActiveTab }: KitSidebar
           </span>
           {/* Chevron down */}
           <svg
-            className="h-4 w-4 shrink-0 text-gray-400"
+            className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
             viewBox="0 0 20 20"
             fill="currentColor"
             aria-hidden="true"
@@ -45,7 +123,27 @@ export default function KitSidebar({ repo, activeTab, setActiveTab }: KitSidebar
               clipRule="evenodd"
             />
           </svg>
-        </div>
+        </button>
+
+        {open && (
+          <div className="absolute left-3 right-3 top-full z-20 mt-1 rounded-xl border border-gray-200 bg-white p-2 shadow-lg">
+            {!isSample && (
+              <>
+                <p className="px-3 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400">
+                  Your repo
+                </p>
+                {renderRepoOption(repo)}
+                <div className="my-2 border-t border-gray-100" />
+              </>
+            )}
+            <p className="px-3 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400">
+              Samples
+            </p>
+            {examples.map((ex) => (
+              <div key={ex.repo}>{renderRepoOption(ex.repo)}</div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Tab list */}

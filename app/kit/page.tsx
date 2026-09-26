@@ -113,6 +113,8 @@ function KitPageInner() {
       <div className="flex flex-1 overflow-hidden pt-16">
         <KitSidebar
           repo={kit.repoPath ?? kit.repo}
+          role={kit.role}
+          level={kit.level}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
