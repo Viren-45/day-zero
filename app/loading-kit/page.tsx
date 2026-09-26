@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import LoadingSteps from "@/components/loading/LoadingSteps";
 import LoadingProgress from "@/components/loading/LoadingProgress";
 import LoadingHeader from "@/components/loading/LoadingHeader";
@@ -66,7 +66,7 @@ function setStepsRange(
   return steps.map((s, i) => (i >= from && i <= to ? { ...s, status } : s));
 }
 
-export default function LoadingKitPage() {
+function LoadingKitPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -205,4 +205,12 @@ export default function LoadingKitPage() {
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export default function LoadingKitPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoadingKitPageInner />
+    </Suspense>
+  );
 }

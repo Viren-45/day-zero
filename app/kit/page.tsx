@@ -2,7 +2,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navbar from "@/components/home/Navbar";
 import KitBreadcrumb from "@/components/kit/KitBreadcrumb";
 import KitSidebar from "@/components/kit/KitSidebar";
@@ -36,7 +36,7 @@ interface Kit {
   chatContext: string;
 }
 
-export default function KitPage() {
+function KitPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -152,5 +152,13 @@ export default function KitPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function KitPage() {
+  return (
+    <Suspense fallback={null}>
+      <KitPageInner />
+    </Suspense>
   );
 }
