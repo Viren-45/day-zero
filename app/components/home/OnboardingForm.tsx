@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
+import Select from "@/components/ui/select";
 import { FOCUS_FORM_EVENT } from "./GetStartedButton";
 // app/lib/utils.ts
 
@@ -22,6 +23,9 @@ export function parseGitHubRepo(input: string): string | null {
 
   return `${parts[0]}/${parts[1]}`;
 }
+
+const ROLES = ["Frontend", "Backend", "Full Stack", "DevOps"];
+const LEVELS = ["Junior", "Mid Level", "Senior"];
 
 const EXAMPLES = [
   { label: "facebook/react", url: "https://github.com/facebook/react" },
@@ -107,30 +111,21 @@ export default function OnboardingForm() {
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-500 pl-1">Role</label>
-          <select
+          <Select
             value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition appearance-none cursor-pointer"
-          >
-            <option>Frontend</option>
-            <option>Backend</option>
-            <option>Full Stack</option>
-            <option>DevOps</option>
-          </select>
+            onChange={setRole}
+            options={ROLES}
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-500 pl-1">
             Level
           </label>
-          <select
+          <Select
             value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition appearance-none cursor-pointer"
-          >
-            <option>Junior</option>
-            <option>Mid Level</option>
-            <option>Senior</option>
-          </select>
+            onChange={setLevel}
+            options={LEVELS}
+          />
         </div>
       </div>
 
