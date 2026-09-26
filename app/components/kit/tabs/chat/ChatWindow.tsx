@@ -51,25 +51,25 @@ export default function ChatWindow({
   if (messages.length === 0 && !isLoading) {
     return (
       <div
-        className="flex-1 flex flex-col items-center justify-between px-4 pt-10 pb-6"
+        className="flex-1 flex flex-col items-center px-4 pt-6 pb-6"
         style={{
           background:
             "radial-gradient(ellipse at 15% 20%, #ede9fe 0%, transparent 50%), radial-gradient(ellipse at 85% 80%, #ede9fe 0%, transparent 50%)",
         }}
       >
         {/* Logo + heading */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-            <span className="text-white text-xl font-bold">&gt;_</span>
+        <div className="flex-1 flex flex-col items-center justify-center gap-5">
+          <div className="w-20 h-20 rounded-3xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+            <span className="text-white text-3xl font-bold">&gt;_</span>
           </div>
           <div className="text-center">
-            <h3 className="text-xl font-extrabold text-gray-900">
+            <h3 className="text-4xl font-extrabold text-gray-900">
               Ask me{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-600">
                 anything
               </span>
             </h3>
-            <p className="text-sm text-gray-500 mt-1 max-w-sm leading-relaxed">
+            <p className="text-base text-gray-500 mt-3 max-w-md leading-relaxed">
               I know this codebase inside out. Ask about files, patterns,
               architecture, or where to start.
             </p>
