@@ -1,9 +1,16 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
 :root {
   --color-bg: #F0EFFF;
   --color-accent: #6C63FF;
+
+  /* Toast (shadcn sonner) */
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --border: #e5e7eb;
+  --radius: 0.75rem;
 }
 
 html,

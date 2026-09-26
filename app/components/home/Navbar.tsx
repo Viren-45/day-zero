@@ -1,4 +1,5 @@
 // app/components/home/Navbar.tsx
+import GetStartedButton from "./GetStartedButton";
 
 export default function Navbar() {
   return (
@@ -31,12 +32,7 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <a
-          href="#form"
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
-        >
-          Get Started
-        </a>
+        <GetStartedButton />
       </div>
     </nav>
   );
