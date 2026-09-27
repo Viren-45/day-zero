@@ -9,6 +9,10 @@ Paste a GitHub repository, pick your role and experience level, and get a person
 </div>
 
 <p align="center">
+  <a href="https://day-zero-kit.vercel.app/"><strong>Live demo: day-zero-kit.vercel.app</strong></a>
+</p>
+
+<p align="center">
   <img src="./public/your-map.png" alt="Day Zero: interactive architecture map" width="900" />
 </p>
 
